@@ -13,6 +13,9 @@
       --muted:rgba(255,255,255,.65);
       --line:rgba(255,255,255,.10);
       --shadow:0 24px 70px rgba(0,0,0,.55);
+
+      --tint:rgba(210,178,108,.35);
+      --tintSoft:rgba(210,178,108,.15);
     }
 
     *{box-sizing:border-box}
@@ -21,6 +24,7 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
       background:var(--bg);
       color:var(--text);
+      -webkit-text-size-adjust:100%;
     }
 
     .wrap{
@@ -41,6 +45,14 @@
       box-shadow:var(--shadow);
       margin-bottom:28px;
     }
+
+    .hero-row{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
     .hero h1{
       font-size:clamp(28px,4vw,44px);
       margin-bottom:10px;
@@ -50,6 +62,34 @@
       color:var(--muted);
       max-width:70ch;
       line-height:1.6;
+      margin:0;
+    }
+
+    /* EP COVER (top) */
+    .ep-tilt{
+      width:170px;
+      height:170px;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      flex:0 0 auto;
+
+      transform-style:preserve-3d;
+      transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
+      will-change:transform;
+    }
+    .ep-tilt img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .ep-tilt:hover{
+      transform:translateY(-2px) scale(1.02);
+      filter:saturate(1.05) contrast(1.03);
+      box-shadow:0 18px 55px rgba(0,0,0,.65);
     }
 
     /* TRACK GRID */
@@ -67,9 +107,11 @@
       background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.20));
       overflow:hidden;
       box-shadow:0 18px 60px rgba(0,0,0,.4);
-
-      --tint:rgba(210,178,108,.35);
-      --tintSoft:rgba(210,178,108,.15);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .track:hover{
+      transform:translateY(-2px);
+      box-shadow:0 22px 75px rgba(0,0,0,.5);
     }
 
     @media(max-width:900px){
@@ -165,85 +207,46 @@
       font-size:12.5px;
       color:rgba(255,255,255,.55);
     }
+
+    /* iPhone-friendly hero layout */
+    @media (max-width:560px){
+      .wrap{padding:18px 14px 52px;}
+      .hero{padding:18px;}
+      .hero-row{gap:14px;}
+      .ep-tilt{
+        width:clamp(120px, 42vw, 160px);
+        height:clamp(120px, 42vw, 160px);
+      }
+    }
+
+    /* Motion preferences */
+    @media (prefers-reduced-motion: reduce){
+      .ep-tilt, .track, .btn{
+        transition:none !important;
+        animation:none !important;
+      }
+    }
   </style>
 </head>
 
 <body>
-<script>
-  // EP cover tilt (desktop only)
-  const ep = document.querySelector('.ep-tilt');
-  if (ep && window.matchMedia('(pointer:fine)').matches) {
-    ep.addEventListener('mousemove', (e) => {
-      const r = ep.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      const rx = (-y * 8).toFixed(2);
-      const ry = ( x * 10).toFixed(2);
-      ep.style.transform =
-        `translateY(-2px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
-    });
-    ep.addEventListener('mouseleave', () => {
-      ep.style.transform = '';
-    });
-  }
-</script>
-
 <div class="wrap">
 
   <!-- HERO WITH EP COVER -->
   <section class="hero">
-    <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
-      
-      <div style="
-	  /* Motion preferences */
-@media (prefers-reduced-motion: reduce){
-  .ep-tilt, .track{
-    transition:none !important;
-    animation:none !important;
-  }
-}
+    <div class="hero-row">
 
-/* EP cover: premium depth hover */
-.ep-tilt{
-  transform-style:preserve-3d;
-  transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
-  will-change:transform;
-}
-.ep-tilt:hover{
-  transform:translateY(-2px) scale(1.02);
-  filter:saturate(1.05) contrast(1.03);
-  box-shadow:0 18px 55px rgba(0,0,0,.65);
-}
-
-/* Track cards: subtle lift */
-.track{
-  transition:transform .18s ease, box-shadow .18s ease;
-}
-.track:hover{
-  transform:translateY(-2px);
-  box-shadow:0 22px 75px rgba(0,0,0,.5);
-}
-
-        width:170px;
-        height:170px;
-        border-radius:16px;
-        overflow:hidden;
-        border:1px solid rgba(255,255,255,.14);
-        background:rgba(255,255,255,.04);
-        box-shadow:0 10px 30px rgba(0,0,0,.35);
-        flex:0 0 auto;
-      ">
+      <div class="ep-tilt">
         <img
           src="assets/third-dimension-ep.jpg"
           alt="Third Dimension EP cover"
-          style="width:100%; height:100%; object-fit:cover; display:block;"
         >
       </div>
 
-      <div>
+      <div class="hero-text">
         <h1>Third Dimension</h1>
         <p>
-          New project loading.  
+          New project loading.
           The next EP exploring depth, presence, and perspective beyond the surface.
         </p>
       </div>
@@ -264,8 +267,8 @@
           <h3>Power</h3>
           <div class="desc">Focused energy.</div>
           <div class="actions">
-            <a class="btn primary" href="https://open.spotify.com/track/1kpXMDjFWIt0LQnVx6DZrh" target="_blank">Stream</a>
-            <a class="btn" href="https://music.apple.com/us/album/power-single/1534809877" target="_blank">Purchase</a>
+            <a class="btn primary" href="https://open.spotify.com/track/1kpXMDjFWIt0LQnVx6DZrh" target="_blank" rel="noopener">Stream</a>
+            <a class="btn" href="https://music.apple.com/us/album/power-single/1534809877" target="_blank" rel="noopener">Purchase</a>
           </div>
         </div>
       </div>
@@ -281,8 +284,8 @@
           <h3>Real</h3>
           <div class="desc">Classic tone.</div>
           <div class="actions">
-            <a class="btn primary" href="https://open.spotify.com/track/4hcCe8dG2DSEtqu4vVyQtO" target="_blank">Stream</a>
-            <a class="btn" href="https://music.apple.com/us/album/real-feat-bazoo-single/1515164242" target="_blank">Purchase</a>
+            <a class="btn primary" href="https://open.spotify.com/track/4hcCe8dG2DSEtqu4vVyQtO" target="_blank" rel="noopener">Stream</a>
+            <a class="btn" href="https://music.apple.com/us/album/real-feat-bazoo-single/1515164242" target="_blank" rel="noopener">Purchase</a>
           </div>
         </div>
       </div>
@@ -298,8 +301,8 @@
           <h3>Self Feud</h3>
           <div class="desc">Reflective and layered.</div>
           <div class="actions">
-            <a class="btn primary" href="https://open.spotify.com/track/4cxjxz9gyw9CpzNStpVAzf" target="_blank">Stream</a>
-            <a class="btn" href="https://music.apple.com/us/album/selffeud-single/1448290476" target="_blank">Purchase</a>
+            <a class="btn primary" href="https://open.spotify.com/track/4cxjxz9gyw9CpzNStpVAzf" target="_blank" rel="noopener">Stream</a>
+            <a class="btn" href="https://music.apple.com/us/album/selffeud-single/1448290476" target="_blank" rel="noopener">Purchase</a>
           </div>
         </div>
       </div>
@@ -315,8 +318,8 @@
           <h3>Vi-Miste</h3>
           <div class="desc">Pure sound from the motherland.</div>
           <div class="actions">
-            <a class="btn primary" href="https://open.spotify.com/album/4Yz1qPhhd5lUu5MaOgT74D" target="_blank">Stream</a>
-            <a class="btn" href="https://music.apple.com/us/album/vi-mist%C3%A8-radio-edit-single/1626200653" target="_blank">Purchase</a>
+            <a class="btn primary" href="https://open.spotify.com/album/4Yz1qPhhd5lUu5MaOgT74D" target="_blank" rel="noopener">Stream</a>
+            <a class="btn" href="https://music.apple.com/us/album/vi-mist%C3%A8-radio-edit-single/1626200653" target="_blank" rel="noopener">Purchase</a>
           </div>
         </div>
       </div>
@@ -331,6 +334,23 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // EP cover tilt (desktop only)
+  const ep = document.querySelector('.ep-tilt');
+  if (ep && window.matchMedia('(pointer:fine)').matches) {
+    ep.addEventListener('mousemove', (e) => {
+      const r = ep.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      const rx = (-y * 8).toFixed(2);
+      const ry = ( x * 10).toFixed(2);
+      ep.style.transform =
+        `translateY(-2px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+    });
+    ep.addEventListener('mouseleave', () => {
+      ep.style.transform = '';
+    });
+  }
 </script>
 </body>
 </html>
