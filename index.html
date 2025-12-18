@@ -45,6 +45,28 @@
       box-shadow:var(--shadow);
       margin-bottom:28px;
     }
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:url("logo.jpg");
+  background-repeat:no-repeat;
+  background-position:right center;
+  background-size:min(520px, 70%);
+  opacity:.08;
+  pointer-events:none;
+  z-index:0;
+}
+
+.hero > *{
+  position:relative;
+  z-index:1;
+}
 
     .hero-row{
       display:flex;
@@ -354,3 +376,4 @@
 </script>
 </body>
 </html>
+
